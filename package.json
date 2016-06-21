@@ -1,0 +1,20 @@
+{
+  "name": "dynaform",
+  "version": "1.0.0",
+  "description": "A job apply chaçllenge",
+  "main": "src/server/index.js",
+  "scripts": {
+    "start": "node src/server/index.js",
+    "build": "./node_modules/.bin/webpack --progress --color",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jairoandre",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0",
+    "jquery": "^1.11.3"
+  },
+  "devDependencies": {
+    "webpack": "^1.13.1"
+  }
+}
