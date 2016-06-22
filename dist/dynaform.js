@@ -3,8 +3,12 @@ Dynaform plugin
 **/
 (function ($) {
 
+  // constants
   var DIV = 'div';
-  var INPUT = 'input';
+  var NAME_ID = 'nome';
+  var EMAIL_ID = 'email';
+  var ESTADO_ID = 'estado';
+  var NIVEL_ID = 'nivel';
 
   var panelOptions = {
     type: DIV,
@@ -21,7 +25,7 @@ Dynaform plugin
   var panelBodyOptions = {
     type: DIV,
     id: 'panel-body',
-    className: 'panel-body',    
+    className: 'panel-body',
     style: 'padding: 25px;'
   };
 
@@ -33,28 +37,31 @@ Dynaform plugin
   var divInputOptions = {
     type: DIV,
     className: 'form-group'
-  }
+  };
 
   var nomeOptions = {
-    id: 'nome',
+    id: NAME_ID,
     label: 'Nome'
   };
 
   var emailOptions = {
-    id: 'email',
+    id: EMAIL_ID,
     label: 'Email'
-  }
+  };
 
   var estadoOptions = {
-    id: 'estado',
+    id: ESTADO_ID,
     label: 'Estado'
-  }
+  };
 
   var nivelOptions = {
-    id: 'nivel',
+    id: NIVEL_ID,
     label: 'Nível'
-  }
+  };
 
+  /**
+  Dynaform plugin
+  **/
 
   $.fn.dynaform = function (options) {
     var panel = createElement(panelOptions);
@@ -63,7 +70,7 @@ Dynaform plugin
     var form = createElement(formOptions);
 
     panelHeading.appendChild(createTextNode('Dynaform'));
-    
+
     panel.appendChild(panelHeading);
     panel.appendChild(panelBody);
     panelBody.appendChild(form);
@@ -104,7 +111,7 @@ Dynaform plugin
 
   function createInput (options) {
     var wrapper = createElement(divInputOptions);
-    var input = document.createElement('input');  
+    var input = document.createElement('input');
     var label = document.createElement('label');
 
     wrapper.appendChild(label);
@@ -117,16 +124,16 @@ Dynaform plugin
     input.className = 'form-control';
 
     return wrapper;
-  };
+  }
 
   function createSelect (options, values) {
-    var wrapper = document.createElement('div');
+    var wrapper = document.createElement(DIV);
     var select = document.createElement('select');
     var label = document.createElement('label');
 
     wrapper.appendChild(label);
     wrapper.appendChild(select);
-    wrapper.className = 'form-group'; 
+    wrapper.className = 'form-group';
 
     label.className = 'control-label';
     label.appendChild(createTextNode(options.label));
@@ -145,12 +152,54 @@ Dynaform plugin
     }
 
     return wrapper;
-  };
+  }
 
-  function createButton() {
-    var buttonGroup = createElement({id: 'btnGroup', type: DIV, className: 'btn-group'})
+  function getValue (id) {
+    return document.getElementById(id).value;
+  }
+
+  function clearValue (id) {
+    document.getElementById(id).value = '';
+  }
+
+  function clearValues () {
+    clearValue(NAME_ID);
+    clearValue(EMAIL_ID);
+    clearValue(ESTADO_ID);
+    clearValue(NIVEL_ID);
+  }
+
+  function getData () {
+    var name = getValue(NAME_ID);
+    var email = getValue(EMAIL_ID);
+    var estado = getValue(ESTADO_ID);
+    var nivel = getValue(NIVEL_ID);
+
+    var user = {name: name, email: email, estado: estado, nivel: nivel};
+
+    return {user: user};
+  }
+
+  function postUser (ev) {
+    ev.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:3000/api/user',
+      data: getData(),
+      success: function (data, status, jqXHR) {
+        console.log('Inserido com sucesso!')
+        console.log(data);
+      },
+      dataType: 'json'
+    });
+    clearValues();
+  }
+
+  function createButton () {
+    var buttonGroup = createElement({id: 'btnGroup', type: DIV, className: 'btn-group'});
     var button = createElement({id: 'button', type: 'button', className: 'btn btn-primary'});
     button.appendChild(createTextNode('Enviar'));
+    button.onclick = postUser;
     buttonGroup.appendChild(button);
     return buttonGroup;
   }

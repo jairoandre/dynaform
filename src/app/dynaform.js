@@ -1,43 +1,128 @@
 var jQuery = require('jquery');
 /**
-  Dynaform plugin
+Dynaform plugin
 **/
 (function ($) {
+
+  var DIV = 'div';
+
+  var panelOptions = {
+    type: DIV,
+    id: 'panel',
+    className: 'panel panel-primary'
+  };
+
+  var panelHeadingOptions = {
+    type: DIV,
+    id: 'panel-heading',
+    className: 'panel-heading'
+  };
+
+  var panelBodyOptions = {
+    type: DIV,
+    id: 'panel-body',
+    className: 'panel-body',
+    style: 'padding: 25px;'
+  };
+
+  var formOptions = {
+    type: 'form',
+    id: 'form'
+  };
+
+  var divInputOptions = {
+    type: DIV,
+    className: 'form-group'
+  };
+
+  var nomeOptions = {
+    id: 'nome',
+    label: 'Nome'
+  };
+
+  var emailOptions = {
+    id: 'email',
+    label: 'Email'
+  };
+
+  var estadoOptions = {
+    id: 'estado',
+    label: 'Estado'
+  };
+
+  var nivelOptions = {
+    id: 'nivel',
+    label: 'Nível'
+  };
+
+  /**
+  Dynaform plugin
+  **/
+
   $.fn.dynaform = function (options) {
-    var formHorizontal = document.createElement('div');
-    
-    formHorizontal.className = 'form-horizontal';
-    appendInput(formHorizontal, 'nome', 'Nome');
-    appendInput(formHorizontal, 'email', 'Email');
+    var panel = createElement(panelOptions);
+    var panelHeading = createElement(panelHeadingOptions);
+    var panelBody = createElement(panelBodyOptions);
+    var form = createElement(formOptions);
+
+    panelHeading.appendChild(createTextNode('Dynaform'));
+
+    panel.appendChild(panelHeading);
+    panel.appendChild(panelBody);
+    panelBody.appendChild(form);
+
+    form.appendChild(createInput(nomeOptions));
+    form.appendChild(createInput(emailOptions));
+
     var fields = options.fields;
     if (fields) {
-      appendSelect(formHorizontal, 'estado', 'Estado', options.fields.estado);
-      appendSelect(formHorizontal, 'nivel', 'Nível', options.fields.nivel);
+      form.appendChild(createSelect(estadoOptions, fields.estado));
+      form.appendChild(createSelect(nivelOptions, fields.nivel));
     }
 
-    this.append(formHorizontal);
+    form.appendChild(createButton());
+
+    this.append(panel);
     return this;
   };
 
-  function appendInput (elem, id, labelText) {
-    var wrapper = document.createElement('div');
-    var input = document.createElement('input');  
+  function createElement (options) {
+    var element = document.createElement(options.type);
+    if (options.id) {
+      element.id = options.id;
+    }
+    if (options.className) {
+      element.className = options.className;
+    }
+    if (options.style) {
+      element.style = options.style;
+    }
+    return element;
+  }
+
+  function createTextNode (text) {
+    var textNode = document.createTextNode(text);
+    return textNode;
+  }
+
+  function createInput (options) {
+    var wrapper = createElement(divInputOptions);
+    var input = document.createElement('input');
     var label = document.createElement('label');
 
     wrapper.appendChild(label);
     wrapper.appendChild(input);
-    wrapper.className = 'form-group';
 
     label.className = 'control-label';
-    label.appendChild(document.createTextNode(labelText));
+    label.appendChild(createTextNode(options.label));
 
+    input.id = options.id;
     input.className = 'form-control';
-    input.id = id;
-    
-    elem.appendChild(wrapper);
-  };
 
-  function appendSelect (elem, id, labelText, values) {
+    return wrapper;
+  }
+
+  function createSelect (options, values) {
     var wrapper = document.createElement('div');
     var select = document.createElement('select');
     var label = document.createElement('label');
@@ -47,24 +132,36 @@ var jQuery = require('jquery');
     wrapper.className = 'form-group';
 
     label.className = 'control-label';
-    label.appendChild(document.createTextNode(labelText));
+    label.appendChild(createTextNode(options.label));
 
+    select.id = options.id;
     select.className = 'form-control';
-    select.id = id;
 
     select.appendChild(document.createElement('option'));
 
     if (values) {
       for (var i = 0; i < values.length; i++) {
         var option = document.createElement('option');
-        var textNode = document.createTextNode(values[i]);
-        option.appendChild(textNode);
+        option.appendChild(createTextNode(values[i]));
         select.appendChild(option);
       }
     }
 
-    elem.appendChild(wrapper);
-  };
+    return wrapper;
+  }
+
+  function postUser () {
+    window.alert('teste');
+  }
+
+  function createButton () {
+    var buttonGroup = createElement({id: 'btnGroup', type: DIV, className: 'btn-group'});
+    var button = createElement({id: 'button', type: 'button', className: 'btn btn-primary'});
+    button.appendChild(createTextNode('Enviar'));
+    button.onClick(postUser);
+    buttonGroup.appendChild(button);
+    return buttonGroup;
+  }
 
 })(jQuery);
 

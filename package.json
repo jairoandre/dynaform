@@ -11,10 +11,12 @@
   "author": "jairoandre",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "jquery": "^1.11.3"
   },
   "devDependencies": {
+    "jasmine-node": "^1.14.5",
     "webpack": "^1.13.1"
   }
 }
