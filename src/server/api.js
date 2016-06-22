@@ -16,10 +16,14 @@ function postUser (req, res, next) {
 
   var user = req.body.user;
 
-  array.push(user);
-
   if (user) {
-    res.send(array);  
+    if (user.name) {
+      array.push(user);
+      res.send(array);  
+    } else {
+      res.status(500).end('Nome obrigatório');
+    }
+    
   } else {
     res.status(500).end('Erro');
   }
